@@ -95,12 +95,9 @@ $(INC_DIR)/%.h: %.h
 	copy /Y $< $@
 
 clean:
-	del /Q $(subst /,\,$(OBJ_DIR))
-	rd /Q $(subst /,\,$(OBJ_DIR))
-	del /Q $(subst /,\,$(OBJ_DIR).dbg)
-	rd /Q $(subst /,\,$(OBJ_DIR).dbg)
-	del /Q $(subst /,\,$(INC_DIR))
-	rd /Q $(subst /,\,$(INC_DIR))
-	del /Q $(subst /,\,$(EXE).exe)
-	del /Q $(subst /,\,$(EXE).dbg)
+	rd  /S /Q $(subst /,\,$(OBJ_DIR)) || Echo:
+	rd  /S /Q $(subst /,\,$(OBJ_DIR).dbg) || Echo:
+	rd  /S /Q $(subst /,\,$(INC_DIR)) || Echo:
+	del /F /Q $(subst /,\,$(EXE).exe)
+	del /F /Q $(subst /,\,$(EXE).dbg)
 endif
