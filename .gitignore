@@ -2,10 +2,15 @@
 *.d
 
 # Compiled Object files
+build
+build.dbg
 *.slo
 *.lo
 *.o
 *.obj
+
+# Copied Headers
+include
 
 # Precompiled Headers
 *.gch
