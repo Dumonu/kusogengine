@@ -1,6 +1,7 @@
 # Determine Paths
 TOP_DIR := $(abspath .)
 SRC_DIR := $(TOP_DIR)/src
+DEP_DIR := $(TOP_DIR)/dep
 OBJ_DIR := $(TOP_DIR)/build
 INC_DIR := $(TOP_DIR)/include
 
@@ -50,10 +51,15 @@ debug: $(OBJ_DIR).dbg includes $(EXE).dbg
 
 includes: $(INC_DIR) $(INC)
 
-$(OBJ_DIR)/%.o: %.cpp $(INC)
+$(DEP_DIR)/%.d: %.cpp $(DEP_DIR)
+	$(GCC) -MM $(CFLAGS) $< | awk 'BEGIN {FS="[:]";OFS=":";RS=""}{$$1="$(OBJ_DIR)/" $$1 " $(OBJ_DIR).dbg/" $$1 " $@"; print $$0}' > $@
+
+include $(addprefix $(DEP_DIR)/,$(patsubst %.cpp,%.d,$(SRC)))
+
+$(OBJ_DIR)/%.o: %.cpp
 	$(GCC) -c $(CFLAGS) -o $@ $<
 
-$(OBJ_DIR).dbg/%.o: %.cpp $(INC)
+$(OBJ_DIR).dbg/%.o: %.cpp
 	$(GCC) -c $(CFLAGS) -g -DDEBUG_ -o $@ $<
 
 $(EXE): $(OBJ)
@@ -63,6 +69,9 @@ $(EXE).dbg: $(DOBJ)
 	$(GCC) -o $@ $^ $(LFLAGS)
 
 ifeq ($(UNIX),1)
+$(DEP_DIR):
+	mkdir $(DEP_DIR)
+
 $(OBJ_DIR):
 	mkdir $(OBJ_DIR)
 
@@ -76,6 +85,7 @@ $(INC_DIR)/%.h: %.h
 	cp -f $< $@
 
 clean:
+	rm -rf $(DEP_DIR)
 	rm -rf $(OBJ_DIR)
 	rm -rf $(OBJ_DIR).dbg
 	rm -rf $(INC_DIR)
