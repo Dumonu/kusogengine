@@ -51,9 +51,6 @@ debug: $(OBJ_DIR).dbg includes $(EXE).dbg
 
 includes: $(INC_DIR) $(INC)
 
-$(DEP_DIR)/%.d: %.cpp $(DEP_DIR)
-	$(GCC) -MM $(CFLAGS) $< | awk 'BEGIN {FS="[:]";OFS=":";RS=""}{$$1="$(OBJ_DIR)/" $$1 " $(OBJ_DIR).dbg/" $$1 " $@"; print $$0}' > $@
-
 include $(addprefix $(DEP_DIR)/,$(patsubst %.cpp,%.d,$(SRC)))
 
 $(OBJ_DIR)/%.o: %.cpp
@@ -69,6 +66,9 @@ $(EXE).dbg: $(DOBJ)
 	$(GCC) -o $@ $^ $(LFLAGS)
 
 ifeq ($(UNIX),1)
+$(DEP_DIR)/%.d: %.cpp $(DEP_DIR)
+	$(GCC) -MM $(CFLAGS) $< | awk 'BEGIN {FS="[:]";OFS=":";RS=""}{$$1="$(OBJ_DIR)/" $$1 " $(OBJ_DIR).dbg/" $$1 " $@"; print $$0}' > $@
+
 $(DEP_DIR):
 	mkdir $(DEP_DIR)
 
@@ -92,6 +92,12 @@ clean:
 	rm -f $(EXE)
 	rm -f $(EXE).dbg
 else ifeq ($(UNIX),0)
+$(DEP_DIR)/%.d: %.cpp $(DEP_DIR)
+	$(GCC) -MM $(CFLAGS) $< | awk "BEGIN {FS=\"[:]\";OFS=\":\";RS=\"\"}{$$1=\"$(OBJ_DIR)/\" $$1 \" $(OBJ_DIR).dbg/\" $$1 \" $@\"; print $$0}" > $@
+
+$(DEP_DIR):
+	mkdir $(subst /,\,$(DEP_DIR))
+
 $(OBJ_DIR):
 	mkdir $(subst /,\,$(OBJ_DIR))
 
@@ -105,6 +111,7 @@ $(INC_DIR)/%.h: %.h
 	copy /Y $< $@
 
 clean:
+	rd  /S /Q $(subst /,\,$(DEP_DIR)) || Echo:
 	rd  /S /Q $(subst /,\,$(OBJ_DIR)) || Echo:
 	rd  /S /Q $(subst /,\,$(OBJ_DIR).dbg) || Echo:
 	rd  /S /Q $(subst /,\,$(INC_DIR)) || Echo:

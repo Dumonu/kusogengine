@@ -16,4 +16,5 @@ To build on Linux and Mac OSX, simply run `make`.
 
 To build on Windows:
 - Install MinGW-w64 based tools.
+- Install a Windows distribution of `awk` (necessary for the Makefile)
 - Run `mingw32-make`
