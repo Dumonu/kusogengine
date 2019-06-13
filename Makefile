@@ -20,6 +20,7 @@ else ifeq ($(shell uname -s), Darwin)
 	UNIX := 1
 else
 	CFLAGS += -DLINUX
+	LFLAGS += $(shell sdl2-config --libs)
 	UNIX := 1
 endif
 
