@@ -19,4 +19,4 @@ To build on Windows:
 [here](https://www.libsdl.org/download-2.0.php), place it in the top directory
 of this project, and untar it.
 - Run `mingw32-make SDL_VER=2.0.10`, replacing the version with the one you downloaded.
-SDL_VER is 2.0.10 by default.
+`SDL_VER` is `2.0.10` by default.
