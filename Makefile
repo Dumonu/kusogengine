@@ -13,13 +13,22 @@ LFLAGS :=
 
 # Modify flags and set up windows versus unix building
 ifeq ($(OS),Windows_NT)
-	CFLAGS += -DWINDOWS
+	# Library Versions - Used in directory names - Change for easy reconfigure
+	SDL_VER := 2.0.10
+
+	# Library Folders - Defaults to in our directory - can change if needed
+	SDL_DIR := $(TOP_DIR)/SDL2-$(SDL_VER)/x86_64-w64-mingw32
+
+	CFLAGS += -DWINDOWS -I$(SDL_DIR)/include
+	LFLAGS += -L$(SDL_DIR)/lib -lSDL2 -lSDL2main
 	UNIX := 0
 else ifeq ($(shell uname -s), Darwin)
 	CFLAGS += -DMACOSX
+	LFLAGS += -framework SDL2
 	UNIX := 1
 else
-	CFLAGS += -DLINUX
+	CFLAGS += -DLINUX $(shell sdl2-config --cflags)
+	LFLAGS += $(shell sdl2-config --libs)
 	UNIX := 1
 endif
 
