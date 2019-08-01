@@ -101,6 +101,10 @@ clean:
 	rm -f $(EXE)
 	rm -f $(EXE).dbg
 else ifeq ($(UNIX),0)
+all: SDL2.dll
+
+SDL2.dll: $(SDL_DIR)/bin/SDL2.dll
+	copy /Y $(subst/,\,$< $(TOP_DIR))
 $(DEP_DIR)/%.d: %.cpp $(DEP_DIR)
 	$(GCC) -MM $(CFLAGS) $< | awk "BEGIN {FS=\"[:]\";OFS=\":\";RS=\"\"}{$$1=\"$(OBJ_DIR)/\" $$1 \" $(OBJ_DIR).dbg/\" $$1 \" $@\"; print $$0}" > $@
 
