@@ -1,0 +1,10 @@
+#! /bin/bash
+
+if [[ $# -ne 3 ]]; then
+    >&2 echo "Usage: $0 [png image] [sprite] [palette]"
+    exit 1
+fi
+
+png2ff < $1 > /tmp/$(basename $1 .png).ff
+
+$(dirname $0)/ff2animage /tmp/$(basename $1 .png).ff $2 $3
